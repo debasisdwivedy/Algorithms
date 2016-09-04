@@ -71,9 +71,8 @@ public class ZigZagConversion {
             for(int i=0;i<rows;i++)
             {
                 ArrayList<Character> temp=result.get(i);
-                if(j<temp.size())
+                if(j<temp.size() && temp.get(j)!=' ')
                 str=str+temp.get(j);
-                str=str.trim();
             }
         }
         return str;
