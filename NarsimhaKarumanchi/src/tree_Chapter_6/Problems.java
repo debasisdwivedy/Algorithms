@@ -17,7 +17,13 @@ public class Problems {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		int[] arr1=new int[]{1,2,3,4,5,6,7};
+		int[] arr2=new int[]{1,2,4,6,8};
+		Tree root1=new Tree("bst",arr1).root;
+		//Tree lca=LCA_BST(root1,new Tree(1),new Tree(2));
+		
+		Tree res=nextLargestNode(root1,4);
+		System.out.println(res.data);
 	}
 
 	public static void preOrder_recursive(Tree root)
@@ -543,5 +549,366 @@ public class Problems {
 				return false;
 			}
 		}
+	}
+	
+	public static Tree LCA(Tree root,int node1,int node2)
+	{
+		if(root==null)
+		{
+			return null;
+		}
+		Tree left_node=null;
+		Tree right_node=null;
+		
+		if(root.left!=null)
+		{
+			left_node=LCA(root.left,node1,node2);
+		}
+		if(root.right!=null)
+		{
+			right_node=LCA(root.right,node1,node2);
+		}
+		if(root.data==node1 || root.data==node2)
+		{
+			return root;
+		}
+		else if(left_node!=null && right_node!=null)
+		{
+			return root;
+		}
+		else if(left_node!=null && right_node==null)
+		{
+			return left_node;
+		}
+		else if(left_node==null && right_node!=null)
+		{
+			return right_node;
+		}
+		else
+		{
+			return null;
+		}
+		
+	}
+	
+	public static Tree binaryTree_From_InOdr_PosOrd(String inorder,String postorder)
+	{
+		/*
+		 * Inorder = L D R = [4 2 5 1 6 3 7]
+		 * Postorder= L R D = [4 5 2 6 7 3 1]
+		 * 
+		 */
+		if(inorder.length()==0 || postorder.length()==0)
+		{
+			return null;
+		}
+		Tree root=null;
+		char node=postorder.charAt(postorder.length()-1);
+		int index=inorder.indexOf(node);
+		root=new Tree(Integer.parseInt(node+""));
+		String left=inorder.substring(0, index);
+		String right=inorder.substring(index+1);
+		if(left.length()>0)
+		{
+			root.left=binaryTree_From_InOdr_PosOrd(left,postorder.substring(0,left.length()));
+		}
+		if(right.length()>0)
+		{
+			root.right=binaryTree_From_InOdr_PosOrd(right,postorder.substring(right.length(),postorder.length()-1));
+		}
+		return root;
+	}
+	
+	public static Tree binaryTree_From_InOdr_PreOrd(String inorder,String preorder)
+	{
+		/*
+		 * Inorder = L D R = [4 2 5 1 6 3 7]
+		 * Preorder= D L R = [1 2 4 5 3 6 7]
+		 * 
+		 */
+		if(inorder.length()==0 || preorder.length()==0)
+		{
+			return null;
+		}
+		
+		char node=preorder.charAt(0);
+		int index=inorder.indexOf(node);
+		Tree root=new Tree(Integer.parseInt(node+""));
+		String left=inorder.substring(0,index);
+		String right=inorder.substring(index+1);
+		if(left.length()>0)
+		{
+			root.left=binaryTree_From_InOdr_PreOrd(left,preorder.substring(1,left.length()+1));
+		}
+		if(right.length()>0)
+		{
+			root.right=binaryTree_From_InOdr_PreOrd(right,preorder.substring(left.length()+1));
+		}
+		return root;
+	}
+	
+	public static void binaryTree_From_InOdr_levlOrd(String inorder,String levelorder)
+	{
+		/*
+		 * Inorder = L D R = [4 2 5 1 6 3 7]
+		 * Levelorder= D L R = [1 2 3 4 5 6 7]
+		 * 
+		 */
+		
+		if(inorder.length()==0 || levelorder.length()==0)
+		{
+			return;
+		}
+		
+	}
+	
+	public static Tree printAllAncestors(Tree root,int node)
+	{
+		if(root==null)
+		{
+			return null;
+		}
+		Tree left_node=null;
+		Tree right_node=null;
+		left_node=printAllAncestors(root.left,node);
+		right_node=printAllAncestors(root.right,node);
+		if(root.data==node || left_node!=null || right_node!=null)
+		{
+			System.out.println(root.data);
+			return root;
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	public static void zigzag_Traversal(Tree root)
+	{
+		if(root==null)
+		{
+			return;
+		}
+	}
+	
+	public static Tree LCA_BST(Tree root,Tree node1,Tree node2)
+	{
+		Tree lowernode=(node1.data<node2.data)?node1:node2;
+		Tree highernode=(node1.data>node2.data)?node1:node2;
+		
+		Tree node=root;
+		Tree LCA=null;
+		while(node!=null)
+		{
+			if(node.data>=lowernode.data && node.data<=highernode.data)
+			{
+				LCA=node;
+				break;
+			}
+			else if(node.data>lowernode.data && node.data>highernode.data)
+			{
+				node=node.left;
+			}
+			else
+			{
+				node=node.right;
+			}
+		}
+		return LCA;
+	}
+	
+	public static boolean isBST(Tree root)
+	{
+		if(root==null)
+		{
+			return false;
+		}
+		
+		if(root.left!=null && root.right!=null)
+		{
+		if((root.left.data>=root.data) || (root.right.data<=root.data))
+		{
+			return false;
+		}
+		else
+		{
+				return (isBST(root.left)) && (isBST(root.right));
+		}
+		}
+		else
+		{
+			if(root.left==null && root.right==null)
+				return true;
+			else if(root.left==null)
+				return isBST(root.right);
+			else
+				return isBST(root.left);
+		}
+	}
+	
+	public static boolean isBST_inorder(Tree root,int prev)
+	{
+		if(root==null)
+		{
+			return true;
+		}
+		if(!isBST_inorder(root.left,prev)){
+			return false;
+		}
+		if(root.data<prev)
+		{
+			return false;
+		}
+		prev=root.data;
+		return isBST_inorder(root.right,prev);
+	}
+	/*
+	 * 
+	 * Needs modifications
+	 */
+	public static Tree bstTOdll(Tree root,TreeDLL td,TreeDLL res)
+	{
+		if(root==null)
+		{
+			return null;
+		}
+		Tree left=null;
+		Tree right=null;
+		td=new TreeDLL(root.data);
+		res=td;
+		if(root.left!=null)
+		{
+			left=bstTOdll(root.left,td,res);
+			td.left=left;
+		}
+		if(root.right!=null)
+		{
+			right=bstTOdll(root.right,td,res);
+			td.right=right;
+		}
+		return root;
+	}
+	
+	public static Tree arrayToBST(int[] arr,int start,int end)
+	{
+		if(end-start<0)
+		{
+			return null;
+		}
+		
+		Tree left=arrayToBST(arr,start,((start+end)/2)-1);
+		Tree right=arrayToBST(arr,((start+end)/2)+1,end);
+		Tree root=new Tree(arr[(start+end)/2]);
+		if(left!=null)
+			root.left=left;
+		if(right!=null)
+			root.right=right;
+		
+		return root;
+	}
+	
+	public static Tree sllToBST(LinkedList<Integer> lst,int start,int end)
+	{
+		int size=end-start;
+		if(size<=0)
+		{
+			return null;
+		}
+		
+		Tree left=sllToBST(lst,start,end/2);
+		Tree root=new Tree(lst.get((start+end)/2));
+		Tree right=sllToBST(lst,((start+end)/2)+1,end);
+		root.left=left;
+		root.right=right;
+		
+		return root;
+	}
+	
+	public static int kSmallestBST(Tree root,int k,int index)
+	{
+		if(root==null)
+		{
+			return 0;
+		}
+		
+		if(root.left==null && root.right==null)
+		{
+			if(index+1==k)
+			{
+				System.out.println(root.data);
+			}
+			return index+1;
+		}
+		if(root.left!=null)
+			index=kSmallestBST(root.left,k,index);
+		
+		if(index+1==k)
+		{
+			System.out.println(root.data);
+		}
+		
+		if(root.right!=null)
+			index=kSmallestBST(root.right,k,index+1);
+		
+		
+		return index;
+		
+	}
+	
+	public static Tree nextSmallestNode(Tree root,int node)
+	{
+		if(root==null)
+		{
+			return null;
+		}
+		Tree res=null;
+		if(root.left!=null)
+			res=nextSmallestNode(root.left,node);
+		if(root.data==node)
+		{
+			System.out.println(res.data);
+			return res;
+		}
+		
+		if(root.right!=null)
+			res=nextSmallestNode(root.right,node);
+		if(res==null)
+			return root;
+		else
+			return res;
+	}
+	
+	public static Tree nextLargestNode(Tree root,int node)
+	{
+		if(root==null)
+		{
+			return null;
+		}
+		Tree res=null;
+		
+		
+		if(root.right!=null)
+			res=nextLargestNode(root.right,node);
+		
+		if(root.data==node)
+		{
+			return res;
+		}
+		
+		if(root.left!=null)
+			res=nextLargestNode(root.left,node);
+		
+		
+		
+		if(res!=null)
+			return res;
+		else
+			return root;
+		
+	}
+	
+	public static void elementsInRangeBST(Tree root, int k, int m)
+	{
+		
 	}
 }
