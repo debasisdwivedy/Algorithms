@@ -29,7 +29,7 @@ public class Graph {
 				if(n1.hasEdge(e))
 				{
 					adjecencyMatrix[i][j]=e.weight;
-					adjecencyMatrix[j][i]=e.weight;//if undirected
+					//adjecencyMatrix[j][i]=e.weight;//if undirected
 					
 				}
 				

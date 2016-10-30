@@ -5,7 +5,9 @@ import java.util.List;
 public class Node {
 	String name;
 	List<Edge> connections;
-	boolean visited=false;
+	boolean visited=false;//for bfs and dfs
+	int distance=Integer.MAX_VALUE;//for shortest path calculation
+	Node parent=null;//for shortest path calculation
 	
 	public Node(String name,List<Edge> connections)
 	{
