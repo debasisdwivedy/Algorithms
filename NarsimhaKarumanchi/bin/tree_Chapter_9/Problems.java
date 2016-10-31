@@ -1,9 +1,11 @@
 package NarsimhaKarumanchi.bin.tree_Chapter_9;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
@@ -14,16 +16,136 @@ public class Problems {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//[[a->b],[b->c,b->a,b->h],[c->e,c->d,c->b],[d->c],[e->c,e->f,e->g,e->h],[f->e],[g->e],[h->b,h->e]]
-		int total_nodes=6;
+		int total_nodes=4;
 		//String str="b;c,a,h;e,d,b;c;c,f,g,h;e;e;b,e";
-		String str="b,f;d;b;c;b,d;e";
-		String weight="10,8;2;1;-2;-4,-1;1";
+		String str="c;a,c;d;b;";
+		String weight="-2;4,3;2;-1;";
 		Graph grp=createGraphFromList(str,weight,total_nodes);
-		bellmanFord(grp);
+		floyd_warshall(grp);
+	}
+	
+	public static void MST_Kruskal(Graph g)
+	{
+		List<Node> nodes=g.adjecencyList;
+		Comparator<Edge> comparator = new EdgeComparator();
+		PriorityQueue<Edge> pe=new PriorityQueue<Edge>(comparator);
+		for(int i=0;i<nodes.size();i++)
+		{
+			Node n=nodes.get(i);
+			List<Edge> neighbours=n.connections;
+			for(int j=0;j<neighbours.size();j++)
+			{
+				if(!neighbours.get(j).end.visited)
+				{
+					pe.add(neighbours.get(j));
+				}
+			}
+			n.visited=true;
+		}
+		
+		for(int i=0;i<nodes.size();i++)
+		{
+			Node n=nodes.get(i);
+			n.visited=false;
+		}
+		
+		while(!pe.isEmpty())
+		{
+			Edge e=pe.poll();
+			if(!e.start.visited || !e.end.visited)
+			{
+				e.start.visited=true;
+				e.end.visited=true;
+				System.out.println(e.start.name+"------>"+e.end.name+"------>"+e.weight);
+			}
+		}
+	}
+	
+	public static void MST_Prims(Graph g)
+	{
+		List<Node> nodes=g.adjecencyList;
+		Comparator<Node> comparator = new NodeComparator();
+		PriorityQueue<Node> pn=new PriorityQueue<Node>(7,comparator);
+		Node start=nodes.get(0);
+		start.distance=0;
+		pn.add(start);
+		
+		while(!pn.isEmpty())
+		{
+			start=pn.poll();
+			start.visited=true;
+			List<Edge> lse=start.connections;
+			for(int i=0;i<lse.size();i++)
+			{
+				Node neighbour=lse.get(i).end;
+				if(!neighbour.visited)
+				{
+					pn.add(neighbour);
+					neighbour.parent=start;
+					neighbour.distance=lse.get(i).weight;
+				}
+			}
+		}
+		
+		for(int i=0;i<nodes.size();i++)
+		{
+			Node parent=nodes.get(i).parent;
+			if(parent==null)
+			{
+				System.out.println(nodes.get(i).name+"------>"+nodes.get(i).distance+"------>"+parent);
+			}
+			else
+			{
+				System.out.println(nodes.get(i).name+"------>"+nodes.get(i).distance+"------>"+parent.name);
+			}
+		}
 	}
 	
 	/*
 	 * 
+	 * Shortest path from each vertex to the other vertex.
+	 * O(V^3)
+	 */
+	
+	public static void floyd_warshall(Graph g)
+	{
+		int[][] result=g.adjecencyMatrix;
+		for(int i=0;i<result.length;i++)
+		{
+			for(int j=0;j<result.length;j++)
+			{
+				if(i==j)
+				{
+					result[i][j]=0;
+				}
+				else
+				{
+					if(result[i][j]==0)
+					{
+						result[i][j]=Integer.MAX_VALUE;
+					}
+				}
+			}
+		}
+		
+		for(int i=0;i<result.length;i++)
+		{
+			for(int j=0;j<result.length;j++)
+			{
+				for(int k=0;k<result.length;k++)
+				{
+					if(result[j][i]!=Integer.MAX_VALUE && result[i][k]!=Integer.MAX_VALUE && result[j][k]>result[j][i]+result[i][k])
+					{
+							result[j][k]=result[j][i]+result[i][k];
+					}
+				}
+			}
+		}
+		printMatrix(result);
+	}
+	
+	/*
+	 * Shortest path
 	 * For graph with negetive edges but it should not have negetive cycles
 	 */
 	
@@ -133,6 +255,8 @@ public class Problems {
 		}
 	}
 	/*
+	 * Shortest path
+	 * No negetive edges
 	 * For graphs with weighted positive edges
 	 * 
 	 */

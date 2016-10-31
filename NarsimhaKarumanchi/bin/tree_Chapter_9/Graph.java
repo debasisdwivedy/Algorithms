@@ -26,9 +26,10 @@ public class Graph {
 			{
 				Node n2=nodes.get(j);
 				Edge e=new Edge(n1,n2,1);
-				if(n1.hasEdge(e))
+				List<Integer> ls=n1.hasEdge(e);
+				if(ls.get(0)>0)
 				{
-					adjecencyMatrix[i][j]=e.weight;
+					adjecencyMatrix[i][j]=ls.get(1);
 					//adjecencyMatrix[j][i]=e.weight;//if undirected
 					
 				}

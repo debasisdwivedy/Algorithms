@@ -1,8 +1,8 @@
 package NarsimhaKarumanchi.bin.tree_Chapter_9;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class Node {
+public class Node{
 	String name;
 	List<Edge> connections;
 	boolean visited=false;//for bfs and dfs
@@ -15,9 +15,11 @@ public class Node {
 		this.connections=connections;
 	}
 	
-	public boolean hasEdge(Edge e)
+	public List<Integer> hasEdge(Edge e)
 	{
-		boolean flag=false;
+		List<Integer> result=new ArrayList<Integer>();
+		result.add(-1);
+		result.add(Integer.MAX_VALUE);
 		if(e.start!=null && e.end!=null)
 		{
 		for(int i=0;i<connections.size();i++)
@@ -27,13 +29,14 @@ public class Node {
 			{
 			if(temp.start.name.equalsIgnoreCase(e.start.name) && temp.end.name.equalsIgnoreCase(e.end.name))
 			{
-				flag= true;
+				result.add(0,1);
+				result.add(1,temp.weight);
 				break;
 			}
 		}
 		}
 		}
-		return flag;
+		return result;
 	}
 
 }
