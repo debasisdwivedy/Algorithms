@@ -1,4 +1,4 @@
-package NarsimhaKarumanchi.src.sort_Chapter_10;
+package sort_Chapter_10;
 
 public class Problems {
 	
